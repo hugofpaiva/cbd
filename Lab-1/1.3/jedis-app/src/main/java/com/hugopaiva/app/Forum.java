@@ -10,6 +10,10 @@ public class Forum {
         System.out.println(jedis.info());
     }
 
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         new Forum();
     }

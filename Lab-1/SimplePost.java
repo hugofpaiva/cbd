@@ -12,17 +12,33 @@ public class SimplePost {
 		this.jedis = new Jedis("localhost");
 	}
  
+	
+	/** 
+	 * @param username
+	 */
 	public void saveUser(String username) {
 		jedis.sadd(USERS, username);
 	}
+	
+	/** 
+	 * @return Set<String>
+	 */
 	public Set<String> getUser() {
 		return jedis.smembers(USERS);
 	}
 	
+	
+	/** 
+	 * @return Set<String>
+	 */
 	public Set<String> getAllKeys() {
 		return jedis.keys("*");
 	}
  
+	
+	/** 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		SimplePost board = new SimplePost();
 		// set some users

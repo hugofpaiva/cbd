@@ -10,6 +10,10 @@ public class MessageNetwork {
     private String userHash;
     private String userMessage;
 
+    /**
+     * Setup connection with redis db, flush database and main keys of redis for
+     * this exercise
+     */
     public MessageNetwork() {
         this.jedis = new Jedis("localhost");
         this.usersSet = "MNUsers";
@@ -18,6 +22,9 @@ public class MessageNetwork {
         this.userMessage = "MNMessages:";
     }
 
+    /**
+     * @return String Check if the user is in the system and saves it if not
+     */
     public String saveUser() {
         Scanner inputScanner = new Scanner(System.in);
         System.out.print("\nInsert your username: ");
@@ -41,6 +48,9 @@ public class MessageNetwork {
         return user;
     }
 
+    /**
+     * @param user Return the user info
+     */
     public void userInfo(String user) {
         if (this.jedis.sismember(this.usersSet, user)) {
             Map<String, String> properties = this.jedis.hgetAll(this.userHash + user);
@@ -54,6 +64,10 @@ public class MessageNetwork {
         }
     }
 
+    /**
+     * @param user Check if there are users available to follow and gives option to
+     *             follow if so
+     */
     public void followUser(String user) {
         Scanner inputScanner = new Scanner(System.in);
         Set<String> usersSet = this.jedis.sdiff(this.usersSet, this.userFollowing + user);
@@ -75,6 +89,9 @@ public class MessageNetwork {
         }
     }
 
+    /**
+     * @param user Registers messages in the system
+     */
     public void sendMessages(String user) {
         Scanner inputScanner = new Scanner(System.in);
         System.out.println("\n-- Sending a message --");
@@ -86,6 +103,10 @@ public class MessageNetwork {
         System.out.println("Message sent!\n");
     }
 
+    /**
+     * @param user Check if there are users available to unfollow and gives option
+     *             to unfollow if so
+     */
     public void unFollowUser(String user) {
         Scanner inputScanner = new Scanner(System.in);
         Set<String> usersSet = this.jedis.smembers(this.userFollowing + user);
@@ -106,6 +127,9 @@ public class MessageNetwork {
         }
     }
 
+    /**
+     * @param user Provides the last 5 messages form the people the user follow
+     */
     public void messagesFromFollowing(String user) {
         Set<String> usersSet = this.jedis.smembers(this.userFollowing + user);
         List<String> users = new ArrayList<String>();
@@ -142,6 +166,9 @@ public class MessageNetwork {
         }
     }
 
+    /**
+     * @param user Show the last 5 messages of the user
+     */
     public void myMessages(String user) {
         List<String> messagesList = this.jedis.lrange(this.userMessage + user, 0, 4);
 
@@ -156,6 +183,10 @@ public class MessageNetwork {
         }
     }
 
+    /**
+     * Lists all the users in the system and provides the information of them if
+     * wanted
+     */
     public void listUsers() {
         Scanner inputScanner = new Scanner(System.in);
         Set<String> usersSet = this.jedis.smembers(this.usersSet);
@@ -178,6 +209,9 @@ public class MessageNetwork {
         }
     }
 
+    /**
+     * @param args
+     */
     public static void main(String[] args) {
         MessageNetwork network = new MessageNetwork();
         Scanner inputScanner = new Scanner(System.in);

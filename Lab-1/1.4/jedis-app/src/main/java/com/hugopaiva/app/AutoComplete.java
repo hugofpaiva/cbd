@@ -9,6 +9,10 @@ public class AutoComplete {
     private Jedis jedis;
     private String key;
 
+    /**
+     * Setup connection with redis db, flush database and take users from file to
+     * redis db
+     */
     public AutoComplete() {
         this.jedis = new Jedis("localhost");
         this.jedis.flushDB();
@@ -16,33 +20,48 @@ public class AutoComplete {
         saveUsersFromFile("female-names.txt");
     }
 
+    /**
+     * @param filename Read users from a file, having a name in each line, and
+     *                 saving them in a Sorted Set
+     */
     public void saveUsersFromFile(String filename) {
-        try{
+        try {
             File file = new File(filename);
             Scanner sc = new Scanner(file);
             String line;
 
-            while (sc.hasNextLine()){
+            while (sc.hasNextLine()) {
                 line = sc.nextLine().trim();
-                if(!line.equals(""))
+                if (!line.equals(""))
                     this.jedis.zadd(this.key, 0, line);
             }
 
-        } catch(Exception e){
-            System.err.println("Error reading from file to db: "+ e);
+        } catch (Exception e) {
+            System.err.println("Error reading from file to db: " + e);
             System.exit(0);
-            
+
         }
 
     }
 
-    public Set<String> getUsersStartedWith(String search){
-        return this.jedis.zrangeByLex(this.key, "["+search, "["+search+Character.MAX_VALUE);
+    /**
+     * @param search
+     * @return Set<String> Provide an AutoComplete search using Redis implementation
+     *         of zrangeByLex, made possible because all elements have score of 0 in
+     *         order to force lexicographical ordering. Search provide all name that
+     *         start with the search argument, inclusive, using interval properties
+     *         of this method.
+     */
+    public Set<String> getUsersStartedWith(String search) {
+        return this.jedis.zrangeByLex(this.key, "[" + search, "[" + search + Character.MAX_VALUE);
     }
 
+    /**
+     * @param args
+     */
     public static void main(String[] args) {
         AutoComplete auto = new AutoComplete();
-        Scanner inputScanner = new Scanner(System.in); // Create a Scanner object
+        Scanner inputScanner = new Scanner(System.in);
         String input = "init";
 
         while (!input.equals("")) {
