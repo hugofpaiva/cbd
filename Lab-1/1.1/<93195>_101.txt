@@ -1,0 +1,100 @@
+LRANGE TestBook:1:comentario 0 -1
+LPUSH TestBook:1:comentario "Muito longo!"
+LRANGE TestBook:1:comentario 0 -1
+RPUSH TestBook:1:comentario "Commmmennnt!?"
+LRANGE TestBook:1:comentario 0 -1
+LPOP TestBook:1:comentario
+LRANGE TestBook:1:comentario 0 -1
+RPOP TestBook:1:comentario
+LRANGE TestBook:1:comentario 0 -1
+RPUSH Organization:1:membros Pessoa:1 Pessoa:2 Pessoa:3 Pessoa:4
+LRANGE Organization:1:members  0 -1
+LRANGE Organization:1:members 0 -1
+LRANGE Organization:1:membros 0 -1
+LTRIM Organization:1:membros 0 2
+LRANGE Organization:1:membros 0 -1
+BRPOP Organization:1:membros 5
+LRANGE Organization:1:members 0 -1
+LRANGE Organization:1:membros 0 -1
+HSET TestBook:3 nome "Gatos"
+HSET TestBook:3 nome
+HGET TestBook:3 n
+HMSET TestBook:4 nome "Tintin" author "Luis Tintin" copyrightYear 1980 ISB 24124124
+HMGET TestBook:4 author ISBN
+HMGET TestBook:4 author ISB
+HGETALL TestBook:4
+HEXISTS TestBook:4 copyrightYear
+HEXISTS TestBook:4 barcode
+HLEN TestBook:4
+HKEYS TestBook:4
+HVALS TestBook:4
+HDEL TestBook:4 copyrightYear
+HGETALL TestBook:4
+HSET TestBook:4 copyrightYear 1968
+HGET TestBook:4 copyrightYear
+HINCRBY TestBook:4 copyrightYear 1
+HGET TestBook:4 copyrightYear
+SET Organization:5 "Beatles"
+SADD Organization:5:membros Paul John George Ringo
+SMEMBERS Organization:5:membros
+SISMEMBER Organization:5:membros "John"
+SISMEMBER Organization:5:membros "Ralph"
+SCARD Organization:5:membro
+SCARD Organization:5:membros
+SET Organization:6 "Wings"
+SET Organization:7 "Traveling Wilburys"
+SADD Organization:6:membros Paul Linda Denny
+SADD Organization:7:membros Bob George Jeff Roy Tom
+SUNION Organization:5:membros Organization:6:membros
+SUNION Organization:6:membros Organization:7:membros
+SUNION Organization:5:membros Organization:6:membros Organization:8
+SINTER Organization:5:membros Organization:6:membros
+SINTER Organization:6:membros Organization:7:membros
+SDIFF Organization:5:membros: Organization:6:membros
+SDIFF Organization:5:membros Organization:6:membros
+ZADD copyrightYear 1996 TestBook:1 2014 TestBook:2 1963 TestBook:3
+ZADD copyrightYear 1969 TestBook:4
+ZRANGE copyrightYear 0 -1
+ZRANGE copyrightYear 0 -1 [WITHSCORES]
+ZRANGE copyrightYear 0 -1 WITHSCORES
+ZREVRANGE copyrightYear 0 -1 WITHSCORES
+ZREVRANGE copyrightYear 0 -1 
+ZADD TestBook:nomes 0 "Into the Wild" 0 "Gatos"
+ZADD TestBook:nome 0 "Time machne" 0 "Gravity"
+ZRANGE TestBook: nome 0 -1 WITHSCORES
+ZRANGE TestBook:nome 0 -1 WITHSCORES
+ZRANGE TestBook:nomes 0 -1 WITHSCORES
+ZRANK copyrightYear TestBook:3
+ZRANK copyrightYear TestBook:1
+ZRANK copyrightYear TestBook:56
+ZRANK copyrightYear TestBook:3
+ZRANK copyrightYear TestBook:1
+ZSCORE copyrightYear TestBook:3
+ZSCORE copyrightYear TestBook:1
+ZRANGE copyrightYear 0 -1 WITHSCORES
+ZCOUNT copyrightYear 1900 1970
+ZRANGEBYSCORE copyrightYear 1900 1970 WITHSCORES
+ZRANGEBYSCORE copyrightYear -inf 2000 WITHSCORES
+ZRANGEBYSCORE copyrightYear 1998 +inf WITHSCORES
+ZCARD copyrightYear
+SET Filme:1 "Blade Runner"
+HSET Movie:2 name "Star Wars"
+SADD Movie:3 "2001 a Space Odyssey"
+SETBIT Movie:UserPlays:2014-12-11 2 1
+GETBIT Movie:UserPLAYS:2014-12-11 2
+GETBIT Movie:UserPlays:2014-12-11 2
+BITCOUNT Movie:UserPlays:2014-12-11
+BITPOS MOVIE:UserPlays:2014-12-11 1
+BITPOS Movie:UserPlays:2014-12-11 1
+BITPOS Movie:UserPlays:2014-12-11 0
+ SETBIT Movie:UserPlays:2014-12-12 2 1
+SETBIT Movie:UserPlays:2014-12-12 1 1
+BITOP AND and_result Movie:UserPlays:2014-12-11 Movie:UserPlays:2014-12-12
+GETBIT and_result 1
+GETBIT and_result 2
+GETBIT and_result 3
+PFADD EducationEvent:1:attendee Person:1 Person:2 Person:3 Person:44556
+PFCOUNT EducationEvent:1:attendee
+PFADD LiteraryEvent:1:attendee Person:4 Person:1
+PFMERGE Event:attendee EducationEvent:1:attendee LiteraryEvent:1:attendee
+PFCOUNT Event:attendee
