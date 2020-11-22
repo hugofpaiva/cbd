@@ -94,19 +94,6 @@ public class MainExA
     }
 
     /**
-     * Insert a list of Documents into collection
-     * @param docsToInsert
-     */
-    public static void bulkInsertDocument(List<Document> docsToInsert){
-        try {
-            collection.insertMany(docsToInsert);
-        }catch (Exception e){
-            System.err.println("Error inserting into MongoDB collection: " + e);
-        }
-
-    }
-
-    /**
      * Fetch Documents in collectiong with the given filter
      * @param filter
      */

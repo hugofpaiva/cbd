@@ -55,16 +55,16 @@ db.rest.find({},{nome:1, gastronomia:1, localidade:1}).sort({gastronomia:1, loca
 db.rest.find({localidade:"Brooklyn", gastronomia:{$ne:"American"}, "grades.grade":"A"},{nome:1, localidade:1, "grade.grade":1, gastronomia:1}).sort({gastronomia:-1})
 
 #19
-db.rest.aggregate([{$group:{_id:"$localidade", count:{$sum:1}}}])
+db.rest.aggregate([{$group:{_id:"$localidade", num:{$sum:1}}}])
 
 #20
-db.rest.aggregate([{ $project: { media: { $avg: "$grades.score"}}}])
+db.rest.aggregate([{$addFields: {avg: {$avg: "$grades.score"} }},{$match: {avg: {$gt: 30}}}])
 
 #21
-db.rest.aggregate([{ $project: { soma:{$sum:"$grades.score"}, gastronomia:"$gastronomia", latitude:{$arrayElemAt:["$address.coord", 0]}}}, {$match:{soma:{$gt:75}, latitude:{$lt:-60}}}])
+db.rest.aggregate([{ $project: { sum:{$sum:"$grades.score"}, gastronomia:"$gastronomia", latitude:{$arrayElemAt:["$address.coord", 0]}}}, {$match:{sum:{$gt:75}, latitude:{$lt:-60}}}])
 
 #22
-db.rest.aggregate([{$group:{_id:"$gastronomia", count:{$sum:1}}}, {$sort:{count:-1}}])
+db.rest.aggregate([{$group:{_id:"$gastronomia", sum:{$sum:1}}}, {$sort:{sum:-1}}])
 
 #23
 db.rest.aggregate([{$match: {"address.rua":"Flatbush Avenue"}}, {$group:{"_id":"$gastronomia"}}, {$count:"gastronomias"}])
@@ -72,20 +72,20 @@ db.rest.aggregate([{$match: {"address.rua":"Flatbush Avenue"}}, {$group:{"_id":"
 #24
 db.rest.aggregate([{$group:{_id:"$address.rua", nRestaurantes:{$sum:1}}}, {$sort:{nRestaurantes:-1}}])
 
-#25 - Mostre quais as gastronomias existentes por rua
-db.rest.aggregate([{$group:{_id:"$address.rua", gastronomias:{$addToSet:"$gastronomia"}}}])
+#25 - Asian food restaurants not located in Brooklyn and Staten Island
+db.rest.find({gastronomia:"Asian", $nor: [ { localidade:"Brooklyn" }, { localidade:"Staten Island" } ] },{nome:1, gastronomia:1, localidade:1})
 
-#26 - Mostre quais os restaurantes cujo nome termina em 'Deli'
-db.rest.find({nome:{$regex:"Deli$"}}, {_id:0, nome:1})
+#26 - Asian food restaurants with a grade of more than 10
+db.rest.find({gastronomia:"Asian", 'grades.score': {$gt: 10} },{nome:1, gastronomia:1, localidade:1})
 
-#27 - Mostre as avaliações do dia ISODate("2014-01-21T00:00:00Z") ordenados por score descendentemente
-db.rest.find({grades:{$elemMatch:{date:ISODate("2014-01-21T00:00:00Z")}}}).sort({"grades.score":-1})
+#27 - Location that has more restaurants
+db.rest.aggregate([{$group: {_id:"$localidade", sum: {$sum:1}}},{$sort: {sum:-1}},{$limit: 1}])
 
-#28 - Mostre a média dos scores de todos os restaurantes
-db.rest.aggregate([{$addFields : { scores :  {$avg : '$grades.score'}}}, {$group : {_id:null, scores :  {$avg : '$scores'}}}])
+#28 - Most popular gastronomy
+db.rest.aggregate([{$group:{ _id:"$gastronomia", sum:{$sum:1}}},{$sort:{sum:-1}},{$limit:1}])
 
-#29 - Mostre qual a gastronomia popular
-db.rest.aggregate([{$group:{ _id:"$gastronomia", nRestaurantes:{$sum:1}}},{$sort:{nRestaurantes:-1}},{$limit:1}])
+#29 - Todos os restaurantes em Brooklyn que a rua começa com 'Br'
+db.rest.find({'address.rua': { $regex: /^Br/}, localidade: "Brooklyn"}, {address: 1, nome: 1, localidade: 1})
 
-#30 - Mostre a média dos scores por Gastronomia
-db.rest.aggregate([{$unwind:"$grades"}, {$unwind:"$gastronomia"},{$group:{_id:"$gastronomia", media:{$avg:"$grades.score"}}}])
+#30 - Asian food restaurants located in Brooklyn ordered descending by name
+db.rest.find({$and:[{gastronomia:"Asian"},{localidade:"Brooklyn"},]},{nome:1,localidade:1,gastronomia:1}).sort({nome:-1})
