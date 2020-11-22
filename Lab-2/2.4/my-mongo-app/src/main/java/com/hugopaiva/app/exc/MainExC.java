@@ -17,7 +17,10 @@ import java.util.logging.Logger;
 import static com.mongodb.client.model.Aggregates.group;
 import static com.mongodb.client.model.Filters.regex;
 
-
+/**
+ * Exercício 2.4
+ * Guided by: https://mongodb.github.io/mongo-java-driver/3.11/
+ */
 public class MainExC {
 
     // Collection of documents

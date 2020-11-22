@@ -109,9 +109,9 @@ Import **collections.json** file into MongoDB, like the restaurants exercise usi
 ## Queries using aggregations
 1. Search 10 top movies according IMDB rating
 2. Search 20 worst movies rated of Romance genre
-3. List the number of Spanish movies by genre
-4. List actores did not appear in the same movies as star Tom Cruise (i.e. never worked with him)
-5. How many Drama movies Natalie Portman participated
-6. Show top 20 movies ordered by rating that were at least 10000 votes
-7. How many movies Emma Watson acting with Daniel Radcliffe
-8. How many 007 movies were produced with a different main actor. For each main actor, list all 007 movies acted in.
+3. List actores did not appear in the same movies as star Tom Cruise (i.e. never worked with him)
+4. How many Action movies rated upper 7.0 has only one director
+5. Show top 20 movies ordered by rating that were at least 10000 votes
+6. How many movies Emma Watson acting with Daniel Radcliffe
+8. List directors who have at least 3 action films rated higher than the average rating of this genre
+7. How many 007 movies were produced with a different main actor (first of cast array). For each main actor, list all 007 movies acted in

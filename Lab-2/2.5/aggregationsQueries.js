@@ -31,7 +31,7 @@ englishActionDrama = function () {
 	});
 };
 
-// 3.List the number of Spanish movies by genre
+// 3.List actores did not appear in the same movies as star Tom Cruise (i.e. never worked with him)
 moviesUSA20102013 = function () {
 	return db.movies.find({
 		$and: [
@@ -46,7 +46,7 @@ moviesUSA20102013 = function () {
 	});
 };
 
-// 4. List actores did not appear in the same movies as star Tom Cruise (i.e. never worked with him)
+// 4.How many Action movies rated upper 7.0 has only one director
 moviesChristopherNolan = function () {
 	return db.movies
 		.find({
@@ -57,7 +57,7 @@ moviesChristopherNolan = function () {
 		.limit(5);
 };
 
-// 5. How many Drama movies Natalie Portman participated
+// 5.Show top 20 movies ordered by rating that were at least 10000 votes
 moviesLeonardoDiCaprio = function () {
 	return db.movies.find({
 		$and: [
@@ -75,7 +75,7 @@ moviesLeonardoDiCaprio = function () {
 	});
 };
 
-// 6. Show top 20 movies ordered by rating that were at least 10000 votes
+// 6.How many movies Emma Watson acting with Daniel Radcliffe
 scientificFiction = function () {
 	return db.movies.find({
 		$and: [
@@ -93,7 +93,7 @@ scientificFiction = function () {
 	}).sort( { 'imdb.rating': 1 } );
 };
 
-// 7. How many movies Emma Watson acting with Daniel Radcliffe
+// 7.List directors who have at least 3 action films rated higher than the average rating of this genre
 scientificFiction = function () {
 	return db.movies.find({
 		$and: [
@@ -111,7 +111,7 @@ scientificFiction = function () {
 	}).sort( { 'imdb.rating': 1 } );
 };
 
-// 8. How many 007 movies were produced with a different main actor. For each main actor, list all 007 movies acted in.
+// 8.How many 007 movies were produced with a different main actor (first of cast array). For each main actor, list all 007 movies acted in
 scientificFiction = function () {
 	return db.movies.find({
 		$and: [
