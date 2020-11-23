@@ -1,130 +1,160 @@
-// 1.Search 10 top movies according IMDB rating
-portugueseDrama = function () {
-	return db.movies.find({
-		$and: [
-			{ countries: { $elemMatch: { $eq: "Portugal" } } },
-			{ genres: { $elemMatch: { $eq: "Drama" } } },
-		],
-	});
+// 1.Number of movies by all actors ordered descendent
+allCastCount = function () {
+	return db.movies.aggregate(
+		{ $unwind: "$cast" },
+		{ $group: { _id: "$cast", count: { $sum: 1 } } },
+		{ $sort: { count: -1 } }
+	);
 };
 
-// 2.Search 20 worst movies rated of Romance genre
-englishActionDrama = function () {
-	return db.movies.find({
-		$and: [
-			{ languages: { $elemMatch: { $eq: "English" } } },
-			{
-				$or: [
-					{
-						genres: {
-							$elemMatch: { $eq: "Drama" },
-						},
-					},
-					{
-						genres: {
-							$elemMatch: { $eq: "Action" },
-						},
-					},
-				],
-			},
-		],
-	});
-};
-
-// 3.List actores did not appear in the same movies as star Tom Cruise (i.e. never worked with him)
-moviesUSA20102013 = function () {
-	return db.movies.find({
-		$and: [
-			{ countries: { $elemMatch: { $eq: "USA" } } },
-			{
-				released: {
-					$gte: ISODate("2010-03-01T00:00:00Z"),
-					$lt: ISODate("2013-09-30T00:00:00Z"),
-				},
-			},
-		],
-	});
-};
-
-// 4.How many Action movies rated upper 7.0 has only one director
-moviesChristopherNolan = function () {
-	return db.movies
-		.find({
-			directors: {
-				$elemMatch: { $eq: "Christopher Nolan" },
-			},
-		})
-		.limit(5);
-};
-
-// 5.Show top 20 movies ordered by rating that were at least 10000 votes
-moviesLeonardoDiCaprio = function () {
-	return db.movies.find({
-		$and: [
-			{
-				directors: {
-					$elemMatch: { $ne: "Leonardo DiCaprio" },
-				},
-			},
-			{
+// 2.Average Rating of Tom Cruise movies
+avgRatingTomCruise = function () {
+	return db.movies.aggregate(
+		{ $unwind: "$cast" },
+		{
+			$match: {
 				cast: {
-					$elemMatch: { $eq: "Leonardo DiCaprio" },
+					$eq: "Tom Cruise",
 				},
 			},
-		],
-	});
+		},
+		{ $group: { _id: "$cast", avgRate: { $avg: "$imdb.rating" } } }
+	);
 };
 
-// 6.How many movies Emma Watson acting with Daniel Radcliffe
-scientificFiction = function () {
-	return db.movies.find({
-		$and: [
-			{
-				genres: {
-					$elemMatch: { $eq: "Thriller" },
+// 3.List actors who did not appear in the same movies as the star Tom Cruise (i.e. never worked with him)
+castWithoutTom = function () {
+	return db.movies.aggregate(
+		{ $unwind: "$cast" },
+		{
+			$match: {
+				cast: {
+					$ne: "Tom Cruise",
 				},
 			},
-			{
-				'imdb.rating': {
-					$gte: 7.0
-				},
-			},
-		],
-	}).sort( { 'imdb.rating': 1 } );
+		},
+		{ $project: { cast: 1, _id: 0 } }
+	);
 };
 
-// 7.List directors who have at least 3 action films rated higher than the average rating of this genre
-scientificFiction = function () {
-	return db.movies.find({
-		$and: [
-			{
-				genres: {
-					$elemMatch: { $eq: "Thriller" },
-				},
+// 4.How many movies where rated upper 7.0 and have only one director
+MoviesRatedDirector = function () {
+	return db.movies.aggregate(
+		{
+			$unwind: "$directors",
+		},
+		{
+			$group: {
+				_id: "$title",
+				avgRate: { $first: "$imdb.rating" },
+				unique_directors: { $addToSet: "$directors" },
 			},
-			{
-				'imdb.rating': {
-					$gte: 7.0
-				},
+		},
+		{
+			$project: {
+				title: 1,
+				avgRate: 1,
+				countDirector: { $size: "$unique_directors" },
 			},
-		],
-	}).sort( { 'imdb.rating': 1 } );
+		},
+		{
+			$match: {
+				avgRate: {
+					$gt: 7,
+				},
+				countDirector: { $eq: 1 },
+			},
+		}
+	);
 };
 
-// 8.How many 007 movies were produced with a different main actor (first of cast array). For each main actor, list all 007 movies acted in
-scientificFiction = function () {
-	return db.movies.find({
-		$and: [
-			{
+// 5.Movie with the most cast
+movieMostCast = function () {
+	return db.movies.aggregate(
+		{ $unwind: "$cast" },
+		{
+			$group: {
+				_id: "$title",
+				countCast: { $sum: 1 },
+			},
+		},
+		{ $sort: { countCast: -1 } },
+		{ $limit: 1 }
+	);
+};
+
+// 6.Avg rating of movies made in 1986
+avgRate1986 = function () {
+	return db.movies.aggregate(
+		{
+			$group: {
+				_id: "$year",
+				avgRate: { $avg: "$imdb.rating" },
+			},
+		},
+		{
+			$match: {
+				_id: {
+					$eq: 1986,
+				},
+			},
+		}
+	);
+};
+
+// 7.List directors who have at least 3 action films rated higher than 7
+directorsAvgRate = function () {
+	return db.movies.aggregate(
+		{
+			$unwind: "$directors",
+		},
+		{
+			$match: {
 				genres: {
-					$elemMatch: { $eq: "Thriller" },
+					$elemMatch: { $eq: "Action" },
 				},
 			},
-			{
-				'imdb.rating': {
-					$gte: 7.0
+		},
+		{
+			$unwind: "$genres",
+		},
+		{
+			$group: {
+				_id: "$directors",
+				avgRate: { $avg: "$imdb.rating" },
+				countActionGenre: { $sum: 1 },
+			},
+		},
+
+		{
+			$match: {
+				avgRate: {
+					$gt: 7,
+				},
+				countActionGenre: {
+					$gt: 3,
 				},
 			},
-		],
-	}).sort( { 'imdb.rating': 1 } );
+		}
+	);
+};
+
+// 8.Harry Potter movie with more comments
+movieHarryPotter = function () {
+	return db.movies.aggregate(
+		{
+			$match: {
+				title: { $regex: ".*Harry Potter.*" },
+			},
+		},
+		{$unwind: "$comments"},
+		{
+			$group: {
+				_id: "$title",
+				countComments: { $sum: 1 },
+			},
+		},
+		{ $sort: { countComments: -1 } },
+		{ $limit: 1 }
+	);
 };
