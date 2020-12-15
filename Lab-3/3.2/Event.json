@@ -1,0 +1,12 @@
+    {"video_id": 5, "user_email": "gonzalez@ua.pt", "id": 6, "creation_date": "2020-12-15 02:37:13.116Z", "time": 65, "type": 1}
+      {"video_id": 1, "user_email": "bicho@ua.pt", "id": 3, "creation_date": "2020-12-15 02:37:13.111Z", "time": 675, "type": 1}
+      {"video_id": 1, "user_email": "pateta@ua.pt", "id": 2, "creation_date": "2020-12-15 02:37:13.109Z", "time": 33, "type": 0}
+     {"video_id": 1, "user_email": "speedy@ua.pt", "id": 10, "creation_date": "2020-12-15 02:37:13.542Z", "time": 55, "type": 0}
+      {"video_id": 8, "user_email": "speedy@ua.pt", "id": 9, "creation_date": "2020-12-15 02:37:13.122Z", "time": 87, "type": 2}
+ {"video_id": 2, "user_email": "hello_nomad@ua.pt", "id": 1, "creation_date": "2020-12-15 02:37:13.106Z", "time": 50, "type": 0}
+     {"video_id": 4, "user_email": "pateta@ua.pt", "id": 4, "creation_date": "2020-12-15 02:37:13.113Z", "time": 123, "type": 2}
+ {"video_id": 7, "user_email": "hello_nomad@ua.pt", "id": 8, "creation_date": "2020-12-15 02:37:13.120Z", "time": 12, "type": 0}
+      {"video_id": 9, "user_email": "bicho@ua.pt", "id": 5, "creation_date": "2020-12-15 02:37:13.114Z", "time": 234, "type": 2}
+    {"video_id": 3, "user_email": "gonzalez@ua.pt", "id": 7, "creation_date": "2020-12-15 02:37:13.118Z", "time": 45, "type": 1}
+
+(10 rows)

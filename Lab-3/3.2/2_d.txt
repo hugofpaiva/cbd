@@ -1,0 +1,77 @@
+#1 Os últimos 3 comentários introduzidos para um vídeo;
+cqlsh:cbd_3_2> SELECT * FROM Comment_Video WHERE video_id = 1 LIMIT 3;
+
+ video_id | creation_date                   | id | comment   | reviewer_email
+----------+---------------------------------+----+-----------+------------------
+        1 | 2020-12-04 00:00:00.000000+0000 |  8 |     Hello | patriciapa@ua.pt
+        1 | 2020-12-01 00:00:00.000000+0000 |  3 | Fantastic |     pateta@ua.pt
+        1 | 2020-12-01 00:00:00.000000+0000 |  4 |   Awesome |      bicho@ua.pt
+
+(3 rows)
+
+#2 Lista das tags de determinado vídeo;
+cqlsh:cbd_3_2> SELECT tags FROM Video WHERE id = 3;
+
+ tags
+---------------------------------------------------
+ {'#BeforeQuarantineLife', 'Music', 'Traditional'}
+
+(1 rows)
+
+#3 Todos os vídeos com a tag Aveiro;
+cqlsh:cbd_3_2> SELECT video_id FROM Tag_By_Video WHERE name = 'Aveiro';
+
+ video_id
+----------
+        3
+
+(1 rows)
+
+#4 Os últimos 5 eventos de determinado vídeo realizados por um utilizador;
+cqlsh:cbd_3_2> SELECT * FROM Event WHERE video_id = 5 and user_email = 'gonzalez@ua.pt' LIMIT 5;
+
+ video_id | user_email     | id | creation_date                   | time | type
+----------+----------------+----+---------------------------------+------+------
+        5 | gonzalez@ua.pt |  6 | 2020-12-15 02:37:13.116000+0000 |   65 |    1
+
+(1 rows)
+
+#5 Vídeos partilhados por determinado utilizador (maria1987, por exemplo) num determinado período de tempo (Agosto de 2017, por exemplo);
+# Utilizou-se o utilizador hugofpaiva em vídeos com data anterior a 16 de Dezembro de 2020
+cqlsh:cbd_3_2> SELECT * FROM Video_By_Username WHERE uploader_user = 'hugofpaiva' AND upload_date < '2020-12-16 00:00:00';
+
+ uploader_user | upload_date                     | id | description         | followers_emails                       | name                    | tags
+---------------+---------------------------------+----+---------------------+----------------------------------------+-------------------------+--------------------------------------
+    hugofpaiva | 2020-12-15 02:46:02.262000+0000 |  1 | ASMR quick unboxing | {'hugofpaiva@ua.pt', 'portugal@ua.pt'} |      iPhone 12 Unboxing |        {'Apple', 'Tech', 'Unboxing'}
+    hugofpaiva | 2020-12-15 02:46:02.287000+0000 |  7 |     Finaly made it! |                     {'gonzalez@ua.pt'} | Buyin a new Lamborghini | {'Cars', 'Lamborghini', 'Lifestyle'}
+    hugofpaiva | 2020-12-15 02:46:02.312000+0000 | 10 |            unboxing |                     {'portugal@ua.pt'} |      iPhone 3G Unboxing |        {'Apple', 'Tech', 'Unboxing'}
+
+(3 rows)
+
+#6 Os últimos 10 vídeos, ordenado inversamente pela data da partilhada;
+# Tal como explicado em: https://stackoverflow.com/questions/35708118/where-and-order-by-clauses-in-cassandra-cql
+# * Cassandra can only enforce a sort order within a partition *  e portanto sem ter algo para filtrar de entre as partition keys, cassandra não assegura a ordem
+
+#7 Todos os seguidores(followers) de determinado vídeo;
+cqlsh:cbd_3_2> SELECT followers_emails FROM Video WHERE id = 3;
+
+ followers_emails
+--------------------
+ {'portugal@ua.pt'}
+
+(1 rows)
+
+#8 Todos os comentários(dos vídeos) que determinado utilizador está a seguir(following);
+# Com apenas uma query isto não seria possível pois teria que se usar JOIN, algo que não é propriamente fácil em Cassandra, apesar de possível (segundo a minha pesquisa)
+# Uma outra opção seria ver os vídeos que um utilizador está a seguir em uma query e dps para cada um desses vídeos fazer queries para ver os comentários
+
+#9 Os 5 vídeos com maior rating;
+# Não é possível devido ao mesmo problema que na query 6. Teríamos de ordenar primeiro e sem algo para filtrar torna-se impossível.
+
+#10 Uma query que retorne todos os vídeos e que mostre claramente a forma pela qual estão ordenados;
+# Mesmo problema que na query 6 e 9. Se queremos ordenar, precisamos de algo para filtrar que esteja presente nas partition keys.
+
+
+#11 Lista com as Tags existentes e o número de vídeos catalogados com cada uma delas;
+# Apenas é possível vendo tag a tag. Numa query não é possível ver todas pois não conseguimos fazer agregações facilmente em Cassandra e o modelo de dados também não é feito para tal.
+# Se o modelo de dados fosse aumentando, por tag, uma variável consoante o nº de vídeo existentes dessa tag talvez fosse possível.

@@ -1,0 +1,44 @@
+#7 Permitir a pesquisa de todos os vídeos de determinado autor;
+
+cqlsh:cbd_3_2> SELECT * FROM Video_By_Uploader WHERE uploader_email = 'hugofpaiva@ua.pt'
+           ... ;
+
+ uploader_email   | upload_date                     | id | description         | followers_emails                       | name                    | tags
+------------------+---------------------------------+----+---------------------+----------------------------------------+-------------------------+--------------------------------------
+ hugofpaiva@ua.pt | 2020-12-15 01:47:58.252000+0000 |  1 | ASMR quick unboxing | {'hugofpaiva@ua.pt', 'portugal@ua.pt'} |      iPhone 12 Unboxing |        {'Apple', 'Tech', 'Unboxing'}
+ hugofpaiva@ua.pt | 2020-12-15 01:47:58.309000+0000 |  7 |     Finaly made it! |                     {'gonzalez@ua.pt'} | Buyin a new Lamborghini | {'Cars', 'Lamborghini', 'Lifestyle'}
+ hugofpaiva@ua.pt | 2020-12-15 01:47:59.110000+0000 | 10 |            unboxing |                     {'portugal@ua.pt'} |      iPhone 3G Unboxing |        {'Apple', 'Tech', 'Unboxing'}
+
+(3 rows)
+
+#8 Permitir a pesquisa de comentários por utilizador, ordenado inversamente pela data;
+
+cqlsh:cbd_3_2> SELECT * FROM Comment_Reviewer WHERE reviewer_email = 'hugofpaiva@ua.pt' ;
+
+ reviewer_email   | creation_date                   | id | comment         | video_id
+------------------+---------------------------------+----+-----------------+----------
+ hugofpaiva@ua.pt | 2020-12-04 00:00:00.000000+0000 |  9 |             Its |        9
+ hugofpaiva@ua.pt | 2020-12-03 00:00:00.000000+0000 |  6 |   What is this? |        7
+ hugofpaiva@ua.pt | 2020-11-30 00:00:00.000000+0000 |  1 | Nice video Mate |        2
+
+(3 rows)
+
+#9 Permitir a pesquisa de comentários por vídeos, ordenado inversamente pela data;
+
+cqlsh:cbd_3_2> SELECT * FROM Comment_Video WHERE video_id = 2;
+
+ video_id | creation_date                   | id | comment         | reviewer_email
+----------+---------------------------------+----+-----------------+------------------
+        2 | 2020-11-30 00:00:00.000000+0000 |  1 | Nice video Mate | hugofpaiva@ua.pt
+
+(1 rows)
+
+#10 Permitir a pesquisa do rating médio de um vídeo e quantas vezes foi votado;
+
+cqlsh:cbd_3_2> SELECT avg(rating), count(rating) FROM Rating WHERE video_id = 7;
+
+ system.avg(rating) | system.count(rating)
+--------------------+----------------------
+                  2 |                    2
+
+(1 rows)

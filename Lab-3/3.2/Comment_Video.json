@@ -1,0 +1,12 @@
+   {"video_id": 5, "creation_date": "2020-12-02 00:00:00.000Z", "id": 5, "comment": "Maybe next time", "reviewer_email": "gonzalez@ua.pt"}
+           {"video_id": 10, "creation_date": "2020-12-04 00:00:00.000Z", "id": 10, "comment": "Me", "reviewer_email": "hello_nomad@ua.pt"}
+           {"video_id": 1, "creation_date": "2020-12-04 00:00:00.000Z", "id": 8, "comment": "Hello", "reviewer_email": "patriciapa@ua.pt"}
+           {"video_id": 1, "creation_date": "2020-12-01 00:00:00.000Z", "id": 3, "comment": "Fantastic", "reviewer_email": "pateta@ua.pt"}
+              {"video_id": 1, "creation_date": "2020-12-01 00:00:00.000Z", "id": 4, "comment": "Awesome", "reviewer_email": "bicho@ua.pt"}
+ {"video_id": 2, "creation_date": "2020-11-30 00:00:00.000Z", "id": 1, "comment": "Nice video Mate", "reviewer_email": "hugofpaiva@ua.pt"}
+     {"video_id": 4, "creation_date": "2020-12-04 00:00:00.000Z", "id": 7, "comment": "Am I alive?", "reviewer_email": "patriciapa@ua.pt"}
+   {"video_id": 7, "creation_date": "2020-12-03 00:00:00.000Z", "id": 6, "comment": "What is this?", "reviewer_email": "hugofpaiva@ua.pt"}
+             {"video_id": 9, "creation_date": "2020-12-04 00:00:00.000Z", "id": 9, "comment": "Its", "reviewer_email": "hugofpaiva@ua.pt"}
+             {"video_id": 3, "creation_date": "2020-11-30 00:00:00.000Z", "id": 2, "comment": "Great", "reviewer_email": "portugal@ua.pt"}
+
+(10 rows)
