@@ -1,0 +1,106 @@
+CREATE KEYSPACE cbd_3_4 WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};
+
+USE cbd_3_4;
+
+
+CREATE TABLE Movie(
+   id int,
+   title text,
+   runtime int,
+   release_date timestamp,
+   cast set<text>,
+   ratings list<double>,
+   sales_by_cinema map<text,int>,
+   PRIMARY KEY(id, title, release_date)
+   ) WITH CLUSTERING ORDER BY (title ASC, release_date DESC);
+
+CREATE TABLE Cinema(
+   id int,
+   name text,
+   address text,
+   zipcode int,
+   employees list<text>,
+   PRIMARY KEY(id, name)
+   ) WITH CLUSTERING ORDER BY (name ASC);
+
+CREATE TABLE Employee(
+   id int,
+   name text,
+   age int,
+   cinema_id int,
+   salary int,
+   PRIMARY KEY(id, name)
+   ) WITH CLUSTERING ORDER BY (name ASC);
+
+CREATE TABLE Comment_Movie(
+   id int,
+   movie_id int,
+   reviewer_name text,
+   comment text,
+   creation_date timestamp,
+   PRIMARY KEY (movie_id, creation_date, id)
+   ) WITH CLUSTERING ORDER BY (creation_date DESC);
+
+CREATE INDEX rdate ON Movie(release_date);
+CREATE INDEX cdate ON Comment_Movie(creation_date);
+
+
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (1, 'Stunt Rock', 86, '1980-08-02', {'Grant Page','Monique van de Ven','Margaret Gerard','Paul Haynes'}, [6.7, 5.6], {'Vouzela':50, 'Aveiro':5000, 'Viseu':200});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (2, 'The Last Remake of Beau Geste', 85, '1977-08-02', {'Ann-Margret','Marty Feldman','Michael York','Peter Ustinov'}, [5.0, 6.2, 4.5, 8.0], {'Vouzela':10, 'Aveiro':400, 'Viseu':100, 'Lisboa':50});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (3, 'Magnum Cop', 93, '1978-08-02', {'Maurizio Merli','Joan Collins','Franco Ressel','Werner Pochath'}, [3.2, 4.8, 5.2], {'Porto':560, 'Setúbal':200, 'Viseu':100, 'Lisboa':502});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (4, 'Shadows in an Empty Room', 99, '1976-08-02', {'Stuart Whitman','John Saxon','Martin Landau','Tisa Farrow'}, [4.7, 3.1], {'Castelo Branco':330, 'Lisboa':120, 'Aveiro':100, 'Viseu':302});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (5, 'Partners', 93, '1982-08-02', {'Ryan O Neal','John Hurt','Kenneth McMillan','Robyn Douglass'}, [2.7, 1.1, 3.5], {'Coimbra':440, 'Viseu':222});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (6, 'Extra Terrestrial Visitors', 80, '1983-08-02', {'Ian Sera','Nina Ferrer','Susanna Bequer','Sara Palmer'}, [4.6, 5.1, 3.2], {'Faro':520, 'Portimão':111});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (7, 'Kaos', 188, '1984-08-02', {'Margarita Lozano','Orazio Torrisi','Carlo Cartier','Biagio Barone'}, [2.3, 4.5, 3.2], {'Leiria':267, 'Évora':711});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (8, 'Iron Eagle', 117, '1986-08-02', {'Louis Gossett Jr.','Jason Gedrick','David Suchet','Larry B. Scott'}, [7.8, 6.5, 8.2], {'Porto':767, 'Lisboa':211});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (9, 'The Law', 81, '1990-08-02', {'Rasmane Ouedraogo','Ina Cisse','Roukietou Barry','Assane Ouedraogo'}, [5.8, 3.3, 7.2], {'Viseu':767, 'Vouzela':551});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (10, 'Daylight', 114, '1996-08-02', {'Sylvester Stallone','Amy Brenneman','Viggo Mortensen','Dan Hedaya'}, [7.6, 8.3, 7.2], {'Castelo Branco':761, 'Vouzela':551});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (11, 'Supernova', 90, '2000-08-02', {'James Spader','Angela Bassett','Robert Forster','Lou Diamond Phillips'}, [8.6, 8.1, 7.1], {'Viseu':211, 'Lisboa':341});
+INSERT INTO Movie (id, title, runtime, release_date, cast, ratings, sales_by_cinema) VALUES (12, 'The Hole', 95, '1998-08-02', {'Kuei-Mei Yang','Kang-sheng Lee','Tien Miao','Hui-Chin Lin'}, [3.5, 4.5, 5.5], {'Viseu':311, 'Lisboa':341});
+
+
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (1, 'Vouzela', 'Quinta da Candeeira', 3670251, ['João']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (2, 'Viseu', 'Rua Principal', 3500004, ['Teresa']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (3, 'Lisboa', 'Rua Teresa', 1000004, ['Paula']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (4, 'Aveiro', 'Rua Do Cais', 3800010, ['Francisco']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (5, 'Porto', 'Rua Da Boavista', 4000010, ['Paulo']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (6, 'Leiria', 'Rua Da Praia', 2400010, ['Henrique']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (7, 'Castelo Branco', 'Rua Do Castelo', 6000010, ['Hugo']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (8, 'Portimão', 'Rua Da Baia', 8500010, ['Daniel']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (9, 'Évora', 'Rua Da Palmeira', 7000010, ['Pedro']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (10, 'Faro', 'Rua Do Pão', 8000010, ['Carolina']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (11, 'Coimbra', 'Rua Da Subida', 3000010, ['Francisca']);
+INSERT INTO Cinema (id, name, address, zipcode, employees) VALUES (12, 'Setúbal', 'Rua Da Descida', 2900010, ['Ross, Jennifer']);
+
+
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (1, 'João', 20, 1, 500);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (2, 'Teresa', 21, 2, 560);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (3, 'Paula', 22, 3, 565);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (4, 'Francisco', 22, 4, 665);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (5, 'Paulo', 22, 5, 465);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (6, 'Henrique', 19, 6, 555);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (7, 'Hugo', 20, 7, 600);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (8, 'Daniel', 20, 8, 611);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (9, 'Pedro', 18, 9, 711);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (10, 'Carolina', 18, 10, 1111);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (11, 'Francisca', 18, 11, 911);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (12, 'Ross', 18, 12, 811);
+INSERT INTO Employee (id, name, age, cinema_id, salary) VALUES (13, 'Jennifer', 30, 12, 851);
+
+
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (1, 1, 'João', 'Bom filme!', '2020-12-15');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (2, 2, 'Carolina', 'Elenco fantastico!', '2020-12-28');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (3, 3, 'Carminho', 'Banda sonora adequada ao genero', '2020-12-01');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (4, 4, 'Filipe', '5 estrelas', '2020-12-10');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (5, 5, 'Jorge', 'Muito bom!', '2020-12-18');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (6, 6, 'Catarina', 'Brilhante!', '2020-12-25');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (7, 7, 'Xavier', 'Banda sonora adequada ao genero', '2020-12-01');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (8, 8, 'Francisca', 'Adequado ao tema', '2020-12-9');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (9, 9, 'Maria Miguel' , 'Bom filme!', '2020-12-15');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (10, 10, 'Tiago', 'Sonoridade incrível', '2020-12-18');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (11, 11, 'Diana', 'Banda sonora podia ser melhor', '2020-11-30');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (12, 12, 'Guilherme', 'Pessimo final', '2020-12-16');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (13, 1, 'Salvador', 'Grande final!', '2020-12-21');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (14, 2, 'Vicente', 'Merecedor de Oscar!', '2020-12-20');
+INSERT INTO Comment_Movie (id, movie_id, reviewer_name, comment, creation_date) VALUES (15, 3, 'Penelope', 'Muito comovente!', '2020-12-09');
+

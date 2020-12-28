@@ -1,0 +1,122 @@
+# Selecionar todos os filmes
+cqlsh:cbd_3_4> SELECT * FROM Movie;
+
+ id | title                         | release_date                    | cast                                                                         | ratings          | runtime | sales_by_cinema
+----+-------------------------------+---------------------------------+------------------------------------------------------------------------------+------------------+---------+---------------------------------------------------------------------
+  5 |                      Partners | 1982-08-01 23:00:00.000000+0000 |           {'John Hurt', 'Kenneth McMillan', 'Robyn Douglass', 'Ryan O Neal'} |  [2.7, 1.1, 3.5] |      93 |                                      {'Coimbra': 440, 'Viseu': 222}
+ 10 |                      Daylight | 1996-08-01 23:00:00.000000+0000 |     {'Amy Brenneman', 'Dan Hedaya', 'Sylvester Stallone', 'Viggo Mortensen'} |  [7.6, 8.3, 7.2] |     114 |                             {'Castelo Branco': 761, 'Vouzela': 551}
+ 11 |                     Supernova | 2000-08-01 23:00:00.000000+0000 | {'Angela Bassett', 'James Spader', 'Lou Diamond Phillips', 'Robert Forster'} |  [8.6, 8.1, 7.1] |      90 |                                       {'Lisboa': 341, 'Viseu': 211}
+  8 |                    Iron Eagle | 1986-08-01 23:00:00.000000+0000 |     {'David Suchet', 'Jason Gedrick', 'Larry B. Scott', 'Louis Gossett Jr.'} |  [7.8, 6.5, 8.2] |     117 |                                       {'Lisboa': 211, 'Porto': 767}
+  8 |                          Kaos | 1986-08-01 23:00:00.000000+0000 |                                            {'Johny Pecado', 'Jonas Brother'} |             null |      25 |                                                    {'Vouzela': 500}
+  2 | The Last Remake of Beau Geste | 1977-08-01 23:00:00.000000+0000 |            {'Ann-Margret', 'Marty Feldman', 'Michael York', 'Peter Ustinov'} | [5, 6.2, 4.5, 8] |      85 |          {'Aveiro': 400, 'Lisboa': 50, 'Viseu': 100, 'Vouzela': 10}
+  4 |      Shadows in an Empty Room | 1976-08-01 23:00:00.000000+0000 |             {'John Saxon', 'Martin Landau', 'Stuart Whitman', 'Tisa Farrow'} |       [4.7, 3.1] |      99 | {'Aveiro': 100, 'Castelo Branco': 330, 'Lisboa': 120, 'Viseu': 302}
+  9 |                       The Law | 1990-08-01 23:00:00.000000+0000 |                                                {'Joo Norte', 'Pedro Pecado'} |  [5.8, 3.3, 7.2] |      65 |                                      {'Viseu': 767, 'Vouzela': 551}
+ 12 |                      The Hole | 1998-08-01 23:00:00.000000+0000 |             {'Hui-Chin Lin', 'Kang-sheng Lee', 'Kuei-Mei Yang', 'Tien Miao'} |  [3.5, 4.5, 5.5] |      95 |                                       {'Lisboa': 341, 'Viseu': 311}
+  3 |                    Magnum Cop | 1978-08-01 23:00:00.000000+0000 |        {'Franco Ressel', 'Joan Collins', 'Maurizio Merli', 'Werner Pochath'} |  [3.2, 4.8, 5.2] |      93 |          {'Lisboa': 502, 'Porto': 560, 'Setbal': 200, 'Viseu': 100}
+
+(10 rows)
+
+# Selecionar o filme com id 11
+cqlsh:cbd_3_4> SELECT * FROM Movie WHERE id = 11;
+
+ id | title     | release_date                    | cast                                                                         | ratings         | runtime | sales_by_cinema
+----+-----------+---------------------------------+------------------------------------------------------------------------------+-----------------+---------+-------------------------------
+ 11 | Supernova | 2000-08-01 23:00:00.000000+0000 | {'Angela Bassett', 'James Spader', 'Lou Diamond Phillips', 'Robert Forster'} | [8.6, 8.1, 7.1] |      90 | {'Lisboa': 341, 'Viseu': 211}
+
+(1 rows)
+
+# Selecionar o filme lançado na data '1976-08-02' (utilizando o índice)
+cqlsh:cbd_3_4> SELECT * FROM Movie WHERE release_date = '1976-08-02'
+           ... ;
+
+ id | title                    | release_date                    | cast                                                             | ratings    | runtime | sales_by_cinema
+----+--------------------------+---------------------------------+------------------------------------------------------------------+------------+---------+---------------------------------------------------------------------
+  4 | Shadows in an Empty Room | 1976-08-01 23:00:00.000000+0000 | {'John Saxon', 'Martin Landau', 'Stuart Whitman', 'Tisa Farrow'} | [4.7, 3.1] |      99 | {'Aveiro': 100, 'Castelo Branco': 330, 'Lisboa': 120, 'Viseu': 302}
+
+(1 rows)
+
+# Selecionar 2 comentários de '2020-12-15'
+cqlsh:cbd_3_4> SELECT * FROM Comment_Movie WHERE creation_date = '2020-12-15' LIMIT 2;
+
+ movie_id | creation_date                   | id | comment    | reviewer_name
+----------+---------------------------------+----+------------+---------------
+        1 | 2020-12-15 00:00:00.000000+0000 |  1 | Bom filme! |           Joo
+        9 | 2020-12-15 00:00:00.000000+0000 |  9 | Bom filme! |  Maria Miguel
+
+(2 rows)
+
+# Selecionar os primeiros 2 comentários pela data de criação (em ordem descrescente) para o movie com id 3
+cqlsh:cbd_3_4> SELECT * FROM Comment_Movie WHERE movie_id = 3 ORDER BY creation_date DESC LIMIT 2;
+
+ movie_id | creation_date                   | id | comment                         | reviewer_name
+----------+---------------------------------+----+---------------------------------+---------------
+        3 | 2020-12-09 00:00:00.000000+0000 | 15 |                Muito comovente! |      Penelope
+        3 | 2020-12-01 00:00:00.000000+0000 |  3 | Banda sonora adequada ao genero |      Carminho
+
+(2 rows)
+
+# Selecionar os comentários do filme com id 3 e a data de criação é maior que '2020-12-01' e ordenados pela data de criação
+cqlsh:cbd_3_4> SELECT * FROM Comment_Movie WHERE movie_id = 3 AND creation_date >= '2020-12-01' ORDER BY creation_date;
+
+ movie_id | creation_date                   | id | comment                         | reviewer_name
+----------+---------------------------------+----+---------------------------------+---------------
+        3 | 2020-12-01 00:00:00.000000+0000 |  3 | Banda sonora adequada ao genero |      Carminho
+        3 | 2020-12-09 00:00:00.000000+0000 | 15 |                Muito comovente! |      Penelope
+
+(2 rows)
+
+# Selecionar um empregado com o id 3 e o nome Paula
+cqlsh:cbd_3_4> SELECT * FROM Employee WHERE id = 3 AND name = 'Paula';
+
+ id | name  | age | cinema_id | salary
+----+-------+-----+-----------+--------
+  3 | Paula |  22 |         3 |    565
+
+(1 rows)
+
+# Selecionar as vendas nos cinemas do filme com id 5
+cqlsh:cbd_3_4> SELECT sales_by_cinema FROM Movie WHERE id = 5;
+
+ sales_by_cinema
+--------------------------------
+ {'Coimbra': 440, 'Viseu': 222}
+
+(1 rows)
+
+# Selecionar os ratings dos filmes
+cqlsh:cbd_3_4> SELECT ratings FROM Movie;
+
+ ratings
+------------------
+  [2.7, 1.1, 3.5]
+  [7.6, 8.3, 7.2]
+  [8.6, 8.1, 7.1]
+  [7.8, 6.5, 8.2]
+             null
+ [5, 6.2, 4.5, 8]
+       [4.7, 3.1]
+  [5.8, 3.3, 7.2]
+  [3.5, 4.5, 5.5]
+  [3.2, 4.8, 5.2]
+
+(10 rows)
+
+# Selecionar os empregados de todos os cinemas
+cqlsh:cbd_3_4> SELECT employees FROM Cinema;
+
+ employees
+--------------------
+          ['Paulo']
+       ['Carolina']
+      ['Francisca']
+         ['Daniel']
+         ['Teresa']
+      ['Francisco']
+          ['Jonas']
+            ['Joo']
+          ['Pedro']
+ ['Ross, Jennifer']
+
+(10 rows)
+
+

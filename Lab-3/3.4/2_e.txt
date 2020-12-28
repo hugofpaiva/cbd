@@ -1,0 +1,118 @@
+# Queries de Update e Delete de dados
+
+# Delete 
+
+cqlsh:cbd_3_4> DELETE FROM Movie WHERE id = 1;
+cqlsh:cbd_3_4> DELETE FROM Movie WHERE id = 6;
+
+cqlsh:cbd_3_4> SELECT * FROM Movie;
+
+ id | title                         | release_date                    | cast                                                                         | ratings          | runtime | sales_by_cinema
+----+-------------------------------+---------------------------------+------------------------------------------------------------------------------+------------------+---------+---------------------------------------------------------------------
+  5 |                      Partners | 1982-08-01 23:00:00.000000+0000 |           {'John Hurt', 'Kenneth McMillan', 'Robyn Douglass', 'Ryan O Neal'} |  [2.7, 1.1, 3.5] |      93 |                                      {'Coimbra': 440, 'Viseu': 222}
+ 10 |                      Daylight | 1996-08-01 23:00:00.000000+0000 |     {'Amy Brenneman', 'Dan Hedaya', 'Sylvester Stallone', 'Viggo Mortensen'} |  [7.6, 8.3, 7.2] |     114 |                             {'Castelo Branco': 761, 'Vouzela': 551}
+ 11 |                     Supernova | 2000-08-01 23:00:00.000000+0000 | {'Angela Bassett', 'James Spader', 'Lou Diamond Phillips', 'Robert Forster'} |  [8.6, 8.1, 7.1] |      90 |                                       {'Lisboa': 341, 'Viseu': 211}
+  8 |                    Iron Eagle | 1986-08-01 23:00:00.000000+0000 |     {'David Suchet', 'Jason Gedrick', 'Larry B. Scott', 'Louis Gossett Jr.'} |  [7.8, 6.5, 8.2] |     117 |                                       {'Lisboa': 211, 'Porto': 767}
+  2 | The Last Remake of Beau Geste | 1977-08-01 23:00:00.000000+0000 |            {'Ann-Margret', 'Marty Feldman', 'Michael York', 'Peter Ustinov'} | [5, 6.2, 4.5, 8] |      85 |          {'Aveiro': 400, 'Lisboa': 50, 'Viseu': 100, 'Vouzela': 10}
+  4 |      Shadows in an Empty Room | 1976-08-01 23:00:00.000000+0000 |             {'John Saxon', 'Martin Landau', 'Stuart Whitman', 'Tisa Farrow'} |       [4.7, 3.1] |      99 | {'Aveiro': 100, 'Castelo Branco': 330, 'Lisboa': 120, 'Viseu': 302}
+  7 |                          Kaos | 1984-08-01 23:00:00.000000+0000 |     {'Biagio Barone', 'Carlo Cartier', 'Margarita Lozano', 'Orazio Torrisi'} |  [2.3, 4.5, 3.2] |     188 |                                        {'Leiria': 267, 'vora': 711}
+  9 |                       The Law | 1990-08-01 23:00:00.000000+0000 |    {'Assane Ouedraogo', 'Ina Cisse', 'Rasmane Ouedraogo', 'Roukietou Barry'} |  [5.8, 3.3, 7.2] |      81 |                                      {'Viseu': 767, 'Vouzela': 551}
+ 12 |                      The Hole | 1998-08-01 23:00:00.000000+0000 |             {'Hui-Chin Lin', 'Kang-sheng Lee', 'Kuei-Mei Yang', 'Tien Miao'} |  [3.5, 4.5, 5.5] |      95 |                                       {'Lisboa': 341, 'Viseu': 311}
+  3 |                    Magnum Cop | 1978-08-01 23:00:00.000000+0000 |        {'Franco Ressel', 'Joan Collins', 'Maurizio Merli', 'Werner Pochath'} |  [3.2, 4.8, 5.2] |      93 |          {'Lisboa': 502, 'Porto': 560, 'Setbal': 200, 'Viseu': 100}
+
+(10 rows)
+
+cqlsh:cbd_3_4> DELETE FROM Cinema WHERE id = 1 and name = 'Vouzela';
+cqlsh:cbd_3_4> DELETE FROM Cinema WHERE id = 3 and name = 'Lisboa';
+cqlsh:cbd_3_4> SELECT * FROM Cinema;
+
+ id | name           | address         | employees          | zipcode
+----+----------------+-----------------+--------------------+---------
+  5 |          Porto | Rua Da Boavista |          ['Paulo'] | 4000010
+ 10 |           Faro |       Rua Do Po |       ['Carolina'] | 8000010
+ 11 |        Coimbra |   Rua Da Subida |      ['Francisca'] | 3000010
+  8 |        Portimo |     Rua Da Baia |         ['Daniel'] | 8500010
+  2 |          Viseu |   Rua Principal |         ['Teresa'] | 3500004
+  4 |         Aveiro |     Rua Do Cais |      ['Francisco'] | 3800010
+  7 | Castelo Branco |  Rua Do Castelo |           ['Hugo'] | 6000010
+  6 |         Leiria |    Rua Da Praia |       ['Henrique'] | 2400010
+  9 |           vora | Rua Da Palmeira |          ['Pedro'] | 7000010
+ 12 |         Setbal |  Rua Da Descida | ['Ross, Jennifer'] | 2900010
+
+(10 rows)
+
+cqlsh:cbd_3_4> DELETE FROM Movie WHERE id = 7 AND title = 'Kaos';
+cqlsh:cbd_3_4> SELECT * FROM Movie;
+
+ id | title                         | release_date                    | cast                                                                         | ratings          | runtime | sales_by_cinema
+----+-------------------------------+---------------------------------+------------------------------------------------------------------------------+------------------+---------+---------------------------------------------------------------------
+  5 |                      Partners | 1982-08-01 23:00:00.000000+0000 |           {'John Hurt', 'Kenneth McMillan', 'Robyn Douglass', 'Ryan O Neal'} |  [2.7, 1.1, 3.5] |      93 |                                      {'Coimbra': 440, 'Viseu': 222}
+ 10 |                      Daylight | 1996-08-01 23:00:00.000000+0000 |     {'Amy Brenneman', 'Dan Hedaya', 'Sylvester Stallone', 'Viggo Mortensen'} |  [7.6, 8.3, 7.2] |     114 |                             {'Castelo Branco': 761, 'Vouzela': 551}
+ 11 |                     Supernova | 2000-08-01 23:00:00.000000+0000 | {'Angela Bassett', 'James Spader', 'Lou Diamond Phillips', 'Robert Forster'} |  [8.6, 8.1, 7.1] |      90 |                                       {'Lisboa': 341, 'Viseu': 211}
+  8 |                    Iron Eagle | 1986-08-01 23:00:00.000000+0000 |     {'David Suchet', 'Jason Gedrick', 'Larry B. Scott', 'Louis Gossett Jr.'} |  [7.8, 6.5, 8.2] |     117 |                                       {'Lisboa': 211, 'Porto': 767}
+  2 | The Last Remake of Beau Geste | 1977-08-01 23:00:00.000000+0000 |            {'Ann-Margret', 'Marty Feldman', 'Michael York', 'Peter Ustinov'} | [5, 6.2, 4.5, 8] |      85 |          {'Aveiro': 400, 'Lisboa': 50, 'Viseu': 100, 'Vouzela': 10}
+  4 |      Shadows in an Empty Room | 1976-08-01 23:00:00.000000+0000 |             {'John Saxon', 'Martin Landau', 'Stuart Whitman', 'Tisa Farrow'} |       [4.7, 3.1] |      99 | {'Aveiro': 100, 'Castelo Branco': 330, 'Lisboa': 120, 'Viseu': 302}
+  9 |                       The Law | 1990-08-01 23:00:00.000000+0000 |    {'Assane Ouedraogo', 'Ina Cisse', 'Rasmane Ouedraogo', 'Roukietou Barry'} |  [5.8, 3.3, 7.2] |      81 |                                      {'Viseu': 767, 'Vouzela': 551}
+ 12 |                      The Hole | 1998-08-01 23:00:00.000000+0000 |             {'Hui-Chin Lin', 'Kang-sheng Lee', 'Kuei-Mei Yang', 'Tien Miao'} |  [3.5, 4.5, 5.5] |      95 |                                       {'Lisboa': 341, 'Viseu': 311}
+  3 |                    Magnum Cop | 1978-08-01 23:00:00.000000+0000 |        {'Franco Ressel', 'Joan Collins', 'Maurizio Merli', 'Werner Pochath'} |  [3.2, 4.8, 5.2] |      93 |          {'Lisboa': 502, 'Porto': 560, 'Setbal': 200, 'Viseu': 100}
+
+(9 rows)
+
+# Update
+
+cqlsh:cbd_3_4> UPDATE Movie SET sales_by_cinema = {'Vouzela': 500} WHERE id = 8 AND title = 'Kaos' AND release_date = '1986-08-02';
+
+cqlsh:cbd_3_4> SELECT * FROM Movie;
+
+ id | title                         | release_date                    | cast                                                                         | ratings          | runtime | sales_by_cinema
+----+-------------------------------+---------------------------------+------------------------------------------------------------------------------+------------------+---------+---------------------------------------------------------------------
+  5 |                      Partners | 1982-08-01 23:00:00.000000+0000 |           {'John Hurt', 'Kenneth McMillan', 'Robyn Douglass', 'Ryan O Neal'} |  [2.7, 1.1, 3.5] |      93 |                                      {'Coimbra': 440, 'Viseu': 222}
+ 10 |                      Daylight | 1996-08-01 23:00:00.000000+0000 |     {'Amy Brenneman', 'Dan Hedaya', 'Sylvester Stallone', 'Viggo Mortensen'} |  [7.6, 8.3, 7.2] |     114 |                             {'Castelo Branco': 761, 'Vouzela': 551}
+ 11 |                     Supernova | 2000-08-01 23:00:00.000000+0000 | {'Angela Bassett', 'James Spader', 'Lou Diamond Phillips', 'Robert Forster'} |  [8.6, 8.1, 7.1] |      90 |                                       {'Lisboa': 341, 'Viseu': 211}
+  8 |                    Iron Eagle | 1986-08-01 23:00:00.000000+0000 |     {'David Suchet', 'Jason Gedrick', 'Larry B. Scott', 'Louis Gossett Jr.'} |  [7.8, 6.5, 8.2] |     117 |                                       {'Lisboa': 211, 'Porto': 767}
+  8 |                          Kaos | 1986-08-01 23:00:00.000000+0000 |                                                                         null |             null |    null |                                                    {'Vouzela': 500}
+  2 | The Last Remake of Beau Geste | 1977-08-01 23:00:00.000000+0000 |            {'Ann-Margret', 'Marty Feldman', 'Michael York', 'Peter Ustinov'} | [5, 6.2, 4.5, 8] |      85 |          {'Aveiro': 400, 'Lisboa': 50, 'Viseu': 100, 'Vouzela': 10}
+  4 |      Shadows in an Empty Room | 1976-08-01 23:00:00.000000+0000 |             {'John Saxon', 'Martin Landau', 'Stuart Whitman', 'Tisa Farrow'} |       [4.7, 3.1] |      99 | {'Aveiro': 100, 'Castelo Branco': 330, 'Lisboa': 120, 'Viseu': 302}
+  9 |                       The Law | 1990-08-01 23:00:00.000000+0000 |    {'Assane Ouedraogo', 'Ina Cisse', 'Rasmane Ouedraogo', 'Roukietou Barry'} |  [5.8, 3.3, 7.2] |      81 |                                      {'Viseu': 767, 'Vouzela': 551}
+ 12 |                      The Hole | 1998-08-01 23:00:00.000000+0000 |             {'Hui-Chin Lin', 'Kang-sheng Lee', 'Kuei-Mei Yang', 'Tien Miao'} |  [3.5, 4.5, 5.5] |      95 |                                       {'Lisboa': 341, 'Viseu': 311}
+  3 |                    Magnum Cop | 1978-08-01 23:00:00.000000+0000 |        {'Franco Ressel', 'Joan Collins', 'Maurizio Merli', 'Werner Pochath'} |  [3.2, 4.8, 5.2] |      93 |          {'Lisboa': 502, 'Porto': 560, 'Setbal': 200, 'Viseu': 100}
+
+(10 rows)
+
+cqlsh:cbd_3_4> UPDATE Cinema SET employees = ['Joo'] WHERE id = 6 AND name = 'Leiria';
+cqlsh:cbd_3_4> UPDATE Cinema SET employees = ['Jonas'] WHERE id = 7 AND name = 'Castelo Branco';
+cqlsh:cbd_3_4> SELECT * FROM Cinema;
+
+ id | name           | address         | employees          | zipcode
+----+----------------+-----------------+--------------------+---------
+  5 |          Porto | Rua Da Boavista |          ['Paulo'] | 4000010
+ 10 |           Faro |       Rua Do Po |       ['Carolina'] | 8000010
+ 11 |        Coimbra |   Rua Da Subida |      ['Francisca'] | 3000010
+  8 |        Portimo |     Rua Da Baia |         ['Daniel'] | 8500010
+  2 |          Viseu |   Rua Principal |         ['Teresa'] | 3500004
+  4 |         Aveiro |     Rua Do Cais |      ['Francisco'] | 3800010
+  7 | Castelo Branco |  Rua Do Castelo |          ['Jonas'] | 6000010
+  6 |         Leiria |    Rua Da Praia |            ['Joo'] | 2400010
+  9 |           vora | Rua Da Palmeira |          ['Pedro'] | 7000010
+ 12 |         Setbal |  Rua Da Descida | ['Ross, Jennifer'] | 2900010
+
+(10 rows)
+
+cqlsh:cbd_3_4> UPDATE Movie SET cast = {'Jonas Brother', 'Johny Pecado'}, runtime = 25 WHERE id = 8 AND title = 'Kaos' AND release_date = '1986-08-02';
+cqlsh:cbd_3_4> UPDATE Movie SET cast = {'Joo Norte', 'Pedro Pecado'}, runtime = 65 WHERE id = 9 AND title = 'The Law' AND release_date = '1990-08-02';
+cqlsh:cbd_3_4> SELECT * FROM Movie;
+
+ id | title                         | release_date                    | cast                                                                         | ratings          | runtime | sales_by_cinema
+----+-------------------------------+---------------------------------+------------------------------------------------------------------------------+------------------+---------+---------------------------------------------------------------------
+  5 |                      Partners | 1982-08-01 23:00:00.000000+0000 |           {'John Hurt', 'Kenneth McMillan', 'Robyn Douglass', 'Ryan O Neal'} |  [2.7, 1.1, 3.5] |      93 |                                      {'Coimbra': 440, 'Viseu': 222}
+ 10 |                      Daylight | 1996-08-01 23:00:00.000000+0000 |     {'Amy Brenneman', 'Dan Hedaya', 'Sylvester Stallone', 'Viggo Mortensen'} |  [7.6, 8.3, 7.2] |     114 |                             {'Castelo Branco': 761, 'Vouzela': 551}
+ 11 |                     Supernova | 2000-08-01 23:00:00.000000+0000 | {'Angela Bassett', 'James Spader', 'Lou Diamond Phillips', 'Robert Forster'} |  [8.6, 8.1, 7.1] |      90 |                                       {'Lisboa': 341, 'Viseu': 211}
+  8 |                    Iron Eagle | 1986-08-01 23:00:00.000000+0000 |     {'David Suchet', 'Jason Gedrick', 'Larry B. Scott', 'Louis Gossett Jr.'} |  [7.8, 6.5, 8.2] |     117 |                                       {'Lisboa': 211, 'Porto': 767}
+  8 |                          Kaos | 1986-08-01 23:00:00.000000+0000 |                                            {'Johny Pecado', 'Jonas Brother'} |             null |      25 |                                                    {'Vouzela': 500}
+  2 | The Last Remake of Beau Geste | 1977-08-01 23:00:00.000000+0000 |            {'Ann-Margret', 'Marty Feldman', 'Michael York', 'Peter Ustinov'} | [5, 6.2, 4.5, 8] |      85 |          {'Aveiro': 400, 'Lisboa': 50, 'Viseu': 100, 'Vouzela': 10}
+  4 |      Shadows in an Empty Room | 1976-08-01 23:00:00.000000+0000 |             {'John Saxon', 'Martin Landau', 'Stuart Whitman', 'Tisa Farrow'} |       [4.7, 3.1] |      99 | {'Aveiro': 100, 'Castelo Branco': 330, 'Lisboa': 120, 'Viseu': 302}
+  9 |                       The Law | 1990-08-01 23:00:00.000000+0000 |                                                {'Joo Norte', 'Pedro Pecado'} |  [5.8, 3.3, 7.2] |      65 |                                      {'Viseu': 767, 'Vouzela': 551}
+ 12 |                      The Hole | 1998-08-01 23:00:00.000000+0000 |             {'Hui-Chin Lin', 'Kang-sheng Lee', 'Kuei-Mei Yang', 'Tien Miao'} |  [3.5, 4.5, 5.5] |      95 |                                       {'Lisboa': 341, 'Viseu': 311}
+  3 |                    Magnum Cop | 1978-08-01 23:00:00.000000+0000 |        {'Franco Ressel', 'Joan Collins', 'Maurizio Merli', 'Werner Pochath'} |  [3.2, 4.8, 5.2] |      93 |          {'Lisboa': 502, 'Porto': 560, 'Setbal': 200, 'Viseu': 100}
+
+(10 rows)
