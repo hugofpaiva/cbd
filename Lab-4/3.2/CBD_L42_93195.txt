@@ -1,21 +1,107 @@
  // NMEC: 12345 
  
 #1 Encontre todos os atores que dirigiram um filme em que também atuaram e apresente o nome do ator e o título do filme
-match(a)-[:DIRECTED]->(f)<-[:ACTED_IN]-(a)
-return a.name as Nome_Ator, f.title as Titulo_Filme 
+MATCH(a)-[:DIRECTED]->(f)<-[:ACTED_IN]-(a)
+RETURN a.name as Nome_Ator, f.title as Titulo_Filme 
 
 #2 Para cada filme realizado depois de 2005, apresente os nomes de todos os atores que atuaram nesse filme
-match(a)-[:ACTED_IN]->(f)
-where f.released > 2005
-with f, collect(a) as atores
-return atores, f.title as Titulo_Filme 
+MATCH(a)-[:ACTED_IN]->(f)
+WHERE f.released > 2005
+WITH f, collect(a) as atores
+RETURN atores, f.title as Titulo_Filme 
 // Helped by: https://stackoverflow.com/questions/22100094/neo4j-cypher-getting-nodes-that-are-related-to-another-node-using-all-relations
 
 #3 Encontre pares de nós com mais do que uma relação entre si.
-match(n1)-[r]->(n2)
-with n1, n2, count(r) as rel_cnt
-where rel_cnt > 1
-return n1, n2
+MATCH (n1)-[r]->(n2)
+WITH n1, n2, count(r) as rel_cnt
+WHERE rel_cnt > 1
+RETURN n1, n2
 // Helped by: https://stackoverflow.com/questions/22998090/find-neo4j-nodes-with-more-than-one-incoming-relationship
 
-#4 
+#4 Encontre todos os pares de pessoas que fizeram revisões do mesmo filme. 
+#Apresente os seus nomes e título de cada filme.
+MATCH (p:Person)-[:REVIEWED]->(f:Movie)<-[:REVIEWED]-(p2:Person)
+WHERE id(p) < id(p2)
+RETURN p.name, p2.name, f.title
+// To avoid nodes repeated: https://stackoverflow.com/questions/18835622/cypher-avoid-duplicate-nodes
+
+#5 Encontre todos os pares de atores que atuaram em vários filmes juntos.
+MATCH (p:Person)-[:ACTED_IN]->(f:Movie)<-[:ACTED_IN]-(p2:Person)
+WHERE id(p) < id(p2)
+WITH p, p2, count(*) as ttl_movies
+WHERE ttl_movies > 1
+RETURN p.name, p2.name
+
+#6 Determine a idade média do elenco do filme "Apollo 13" no ano do lançamento do filme.
+MATCH (p:Person)-[:ACTED_IN]->(f:Movie)
+WHERE f.title = "Apollo 13"
+WITH f, f.released-p.born as idade_pessoa
+RETURN f.title as Titulo_Filme, avg(idade_pessoa) as idade_media
+
+#7 Encontre os 10 filmes com o elenco mais velho no momento do lançamento do filme. 
+#Apresente o filme e a idade média arredondada a 2 casas decimais, por ordem decrescente.
+MATCH (p:Person)-[:ACTED_IN]->(f:Movie)
+WITH f, round(avg(f.released-p.born)*100)/100 as idade_media
+RETURN f.title as Titulo_Filme, idade_media
+ORDER BY idade_media DESC
+LIMIT 10
+// Helped by: https://stackoverflow.com/questions/25094764/how-to-round-to-some-precision-in-noe4j
+
+#8 Apresente o subgrafo ACTED_IN do filme com o elenco mais novo, no momento do lançamento do filme.
+MATCH (p:Person)-[:ACTED_IN]->(f:Movie)
+WITH f, avg(f.released-p.born) as idade_media
+ORDER BY idade_media
+LIMIT 1
+MATCH (p1:Person)-[:ACTED_IN]->(f1:Movie)
+WHERE f = f1
+RETURN p1, f1
+
+#9 Qual é o caminho mais curto (usando qualquer tipo de relação) entre John Cusack e Demi Moore?
+MATCH p = shortestPath((p1:Person{name:"John Cusack"})-[*]-(p2:Person{name: "Demi Moore"}))
+RETURN p
+// Helped by: https://neo4j.com/docs/cypher-manual/current/execution-plans/shortestpath-planning/
+
+#10 Qual a dimensão caminho mais curto (usando qualquer tipo de relação) entre Keanu Reeves e Tom Cruise?
+MATCH p = shortestPath((p1:Person{name:"Keanu Reeves"})-[*]-(p2:Person{name: "Tom Cruise"}))
+RETURN length(p)
+
+#11 Quais são a dimensão do caminho mais curto entre pessoas com nome Jim e pessoas com nome Kevin?
+MATCH p = shortestPath((p1:Person)-[*]-(p2:Person)) WHERE p1.name CONTAINS "Jim" AND p2.name CONTAINS "Kevin"
+RETURN p1.name, p2.name, length(p) as length
+ORDER BY length
+LIMIT 1
+
+#12 Que pessoas têm uma distância 2 para Jim Cash (a distância entre duas pessoas é o comprimento do caminho mais curto entre eles)?
+MATCH p = shortestPath((p1:Person)-[*1..2]-(p2:Person{name: "Jim Cash"}))
+WHERE length(p) = 2 and id(p1) < id(p2)
+return p1.name
+// Helped by: https://neo4j.com/docs/cypher-manual/current/syntax/patterns/
+
+#13 Qual é a maior distância de uma pessoa para Kevin Bacon?
+MATCH p = shortestPath((p1:Person)-[*]-(p2:Person{name: "Kevin Bacon"}))
+WHERE id(p1) < id(p2)
+RETURN p1.name, length(p) as length
+ORDER BY length DESC
+LIMIT 1
+
+#14 Qual é a maior distância entre duas pessoas?
+MATCH p = shortestPath((p1:Person)-[*]-(p2:Person))
+WHERE id(p1) < id(p2)
+RETURN p1.name, p2.name, length(p) as length
+ORDER BY length DESC
+LIMIT 1
+
+#15  Qual é a distribuição de distâncias em pares (isto é, para a distância 1, 2, 3, ..., quantos pares de pessoas têm essa distância um do outro)?
+MATCH p = shortestPath((p1:Person)-[*]-(p2:Person))
+WHERE id(p1) < id(p2)
+WITH length(p) as length
+RETURN length, count(length)
+ORDER BY length
+
+#16 Indique as 10 pessoas com menor distância média em que o caminho entre elas são relações do tipo ACTED_IN.
+MATCH p = shortestPath((p1:Person)-[:ACTED_IN*]-(p2:Person))
+WHERE id(p1) < id(p2)
+WITH avg(length(p)) as avg_length, p1, p2
+RETURN p1.name, p2.name, avg_length
+ORDER BY avg_length
+LIMIT 10
