@@ -1,0 +1,65 @@
+// NMEC: 93195 
+// a) Existirão as seguintes entidades e propriedades das mesmas:
+//    - User
+//        - num
+//        - svn_id
+//        - real_name
+//        - organization
+//    - Project
+//        - name
+
+// Existirá também a relação:
+//    - WORKS_ON_PROJECT
+//        - role
+
+// b) Guiado por: https://neo4j.com/developer/guide-import-csv/
+//    LOAD CSV WITH HEADERS FROM 'file:///git_selection.csv' AS row
+//    MERGE (u:User {num: toInteger(row.num), svn_id: row.svn_id, real_name: row.real_name, organization: row.organization})
+//    MERGE (p:Project {name: row.project_name})
+//    MERGE (u)-[r:WORKS_ON_PROJECT {role: row.role_on_project}]->(p);
+
+// c)
+
+#1 Liste a informação de cada utilizador.
+MATCH(u:User)
+RETURN u
+
+#2 Liste o nome de cada utilizador.
+MATCH(u:User)
+RETURN u.real_name
+
+#3 Liste a informação de cada projeto, no qual tenha participado pelo menos um utilizador.
+MATCH (u:User)-[:WORKS_ON_PROJECT]->(p:Project)
+RETURN DISTINCT p
+
+#4 Liste os utilizadores e total de projetos em que cada um colabora.
+MATCH (u:User)-[r:WORKS_ON_PROJECT]->()
+WITH u.svn_id as id, count(r) as total_projs
+RETURN id, total_projs
+
+#5 Liste os utilizadores e o total de projetos em que cada colabora ordenados por ordem decrescente do total.
+MATCH (u:User)-[r:WORKS_ON_PROJECT]->()
+WITH u.svn_id as id, count(r) as total_projs
+RETURN id, total_projs
+ORDER BY total_projs DESC
+
+#6 Liste projetos e total de membros em cada projeto.
+MATCH (u:User)-[r:WORKS_ON_PROJECT]->(p:Project)
+WITH p, count(r) as total_membros
+RETURN p.name, total_membros
+
+#7 Liste projetos e total de membros com a role "Committer" em cada projeto.
+MATCH (u:User)-[r:WORKS_ON_PROJECT]->(p:Project)
+WITH p, count(r.role = "Committer") as total_membros
+RETURN p.name, total_membros
+
+#8 Liste todos os utilizadores que participaram nos mesmo projetos do que o utilizador "atm" (id). Mostre os atributos: nome de "atm", nome utilizador 2, nome do projeto.
+MATCH (u1:User)-[:WORKS_ON_PROJECT]->(p:Project)<-[:WORKS_ON_PROJECT]-(u2:User)
+WHERE u1.svn_id = "atm" and id(u1) < id(u2)
+RETURN u1.real_name, u2.svn_id, p.name
+
+#9 Liste todos os utilizadores que participaram com a role "Committer" em projetos em que o utilizador "atm" (id1) participou com a role "PMC".
+MATCH (u1:User {svn_id: "atm"})-[r1:WORKS_ON_PROJECT {role: "PMC"}]->(p:Project)<-[r2:WORKS_ON_PROJECT {role:"Committer"}]-(u2:User)
+WHERE id(u1) < id(u2)
+RETURN u2
+

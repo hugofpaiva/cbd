@@ -1,4 +1,4 @@
- // NMEC: 12345 
+// NMEC: 93195 
  
 #1 Encontre todos os atores que dirigiram um filme em que também atuaram e apresente o nome do ator e o título do filme
 MATCH(a)-[:DIRECTED]->(f)<-[:ACTED_IN]-(a)
