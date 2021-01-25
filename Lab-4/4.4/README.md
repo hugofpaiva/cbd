@@ -1,7 +1,7 @@
 
 **Source:** https://www.kaggle.com/START-UMD/gtd
 
-Filtrou-se o dataset para conter apenas dados posteriores a 2000 mantendo-se as seguinte colunas
+Filtrou-se o dataset para conter apenas dados posteriores a 2000 mantendo as seguinte colunas
 
 **Columns:**
 - AttackID
@@ -27,7 +27,8 @@ Filtrou-se o dataset para conter apenas dados posteriores a 2000 mantendo-se as 
 - WeaponName
 - nKills
 
-**Entidades:** Ataque, TipoAtaque, AlvoAtaque, Arma
+**Entidades:** 
+
     - Ataque
         - id
         - ano
@@ -46,6 +47,7 @@ Filtrou-se o dataset para conter apenas dados posteriores a 2000 mantendo-se as 
         - nome
 
 **Relações:** 
+
     - ATACOU_O_ALVO
     - UTILIZOU_A_ARMA
     - TIPO
@@ -63,3 +65,12 @@ Filtrou-se o dataset para conter apenas dados posteriores a 2000 mantendo-se as 
 8. Qual o ano com mais mortes registadas?
 9. Quantos ataques mal sucedidos ocorreram em países começados por "P"
 10. Listar por ordem decrescente a mortalidade das armas
+
+## Executar
+
+```
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+$ python3 exc.py
+```

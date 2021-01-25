@@ -1,4 +1,5 @@
 // NMEC: 93195 
+
 // a) Existirão as seguintes entidades e propriedades das mesmas:
 //    - User
 //        - num
