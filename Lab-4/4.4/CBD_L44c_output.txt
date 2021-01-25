@@ -1,0 +1,112 @@
+
+
+1. Listar todas as armas
+
+MATCH (g:Arma) RETURN g.id, g.nome
+
+--- g.id         g.nome        ---
+ 13         Unknown        
+ 5         Firearms        
+ 9         Melee        
+ 6         Explosives        
+ 2         Chemical        
+...
+
+2. Listar todos os ataques considerados suicidas
+
+MATCH (a:Ataque{suicidio:1}) RETURN a.id, a.ano, a.mes, a.dia, a.suicidio
+
+--- a.id         a.ano         a.mes         a.dia         a.suicidio        ---
+ 200006050004         2000         6         5         1        
+ 200006070002         2000         6         7         1        
+ 200007020001         2000         7         2         1        
+ 200010020001         2000         10         2         1        
+ 200010230007         2000         10         23         1        
+...
+
+3. Listar os 5 tipos de ataques mais comuns
+
+MATCH (a:Ataque)-[r:TIPO]->(t:TipoAtaque) RETURN t.nome, count(r) as tipoCount ORDER BY tipoCount DESC LIMIT 5
+
+--- t.nome         tipoCount        ---
+ Bombing/Explosion         1565        
+ Armed Assault         776        
+ Unknown         207        
+ Hostage Taking (Kidnapping)         189        
+ Facility/Infrastructure Attack         129        
+
+4. Listar as armas mais usadas em ataques feitos nos 'United States'
+
+MATCH (a:Ataque)-[r:ATACOU_O_ALVO]->(aa:AlvoAtaque{nome: 'United States'}), (a)-[r2:UTILIZOU_A_ARMA]->(g:Arma) RETURN g.nome, count(r2) as gunCount ORDER BY gunCount DESC
+
+--- g.nome         gunCount        ---
+ Explosives         10        
+ Firearms         5        
+ Vehicle (not to include vehicle-borne explosives, i.e., car or truck bombs)         4        
+ Unknown         1        
+
+5. Listar os ataques com mortes superiores a 50 com o tipo 'Unknown'
+
+MATCH (a:Ataque)-[r:TIPO]->(t:TipoAtaque{nome: 'Unknown'}) WHERE a.nmortes > 50 RETURN a.id, a.ano, a.mes, a.dia, a.nmortes
+
+--- a.id         a.ano         a.mes         a.dia         a.nmortes        ---
+ 201502270014         2015         2         27         51        
+ 200702190006         2007         2         19         63        
+ 201111080001         2011         11         8         60        
+ 201402230043         2014         2         23         61        
+ 200907270028         2009         7         27         76        
+...
+
+6. Quais os 5 ataques mais mortíferos?
+
+MATCH (a:Ataque) RETURN a.id, a.ano, a.mes, a.dia, a.nmortes ORDER BY a.nmortes DESC LIMIT 5
+
+--- a.id         a.ano         a.mes         a.dia         a.nmortes        ---
+ 201406150063         2014         6         12         1570        
+ 200109110004         2001         9         11         1384        
+ 200109110005         2001         9         11         1383        
+ 201408090071         2014         8         3         953        
+ 201406100042         2014         6         10         670        
+
+7. Qual o total de ataques com mortes por cada país, ordenados por ordem decrescente?
+
+MATCH (a:Ataque)-[r:ATACOU_O_ALVO]->(aa:AlvoAtaque) WHERE a.nmortes > 0 RETURN aa.nome, sum(a.nmortes) as mortes ORDER BY mortes DESC
+
+--- aa.nome         mortes        ---
+ Iraq         23001        
+ Nigeria         10508        
+ Syria         6262        
+ Pakistan         5676        
+ Afghanistan         5304        
+...
+
+8. Qual o ano com mais mortes registadas?
+
+MATCH (a:Ataque) RETURN a.ano, sum(a.nmortes) as mortes ORDER BY mortes DESC LIMIT 1
+
+--- a.ano         mortes        ---
+ 2014         20119        
+
+9. Quantos ataques sem mortes ocorreram em países começados por 'P'
+
+MATCH (a:Ataque)-[r:ATACOU_O_ALVO]->(aa:AlvoAtaque) WHERE aa.nome STARTS WITH 'P' AND a.nmortes=0 RETURN a.id, a.ano, a.mes, a.dia, a.nmortes, aa.nome as Alvo
+
+--- a.id         a.ano         a.mes         a.dia         a.nmortes         Alvo        ---
+ 201601170003         2016         1         17         0         Philippines        
+ 201601260040         2016         1         26         0         Philippines        
+ 201601110011         2016         1         11         0         Philippines        
+ 201601230050         2016         1         23         0         Philippines        
+ 201601220036         2016         1         22         0         Philippines        
+...
+
+10. Listar por ordem decrescente a mortalidade das armas
+
+MATCH (a:Ataque)-[r:UTILIZOU_A_ARMA]->(g:Arma) RETURN g.nome, sum(a.nmortes) as mortes ORDER BY mortes DESC
+
+--- g.nome         mortes        ---
+ Explosives         44903        
+ Firearms         21738        
+ Unknown         7958        
+ Vehicle (not to include vehicle-borne explosives, i.e., car or truck bombs)         3001        
+ Incendiary         1959        
+...
