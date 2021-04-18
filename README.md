@@ -5,7 +5,7 @@
 -   [**Lab 1 : Bases de Dados Chave-Valor (Redis)**](./lab-1) 
 -   [**Lab 2 : Bases de Dados de Documentos (MongoDB)**](./lab-2) 
 -   [**Lab 3 : Bases de Dados orientadas a colunas (Cassandra)**](./lab-3) 
--   [**Lab 4 : ases de Dados orientadas a grafos (Neo4j)**](./lab-3) 
+-   [**Lab 4 : Bases de Dados orientadas a grafos (Neo4j)**](./lab-3) 
 
 
 ## Autor
